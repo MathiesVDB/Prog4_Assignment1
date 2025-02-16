@@ -9,11 +9,11 @@ dae::TextObject::TextObject(const std::string& text, std::shared_ptr<Font> font)
 	: m_needsUpdate(true), m_text(text), m_font(std::move(font)), m_textTexture(nullptr)
 { }
 
-void dae::TextObject::Update()
+void dae::TextObject::Update([[maybe_unused]]float deltaTime)
 {
 	if (m_needsUpdate)
 	{
-		const SDL_Color color = { 255,255,255,255 }; // only white text is supported now
+		constexpr SDL_Color color = { 255,255,255,255 }; // only white text is supported now
 		const auto surf = TTF_RenderText_Blended(m_font->GetFont(), m_text.c_str(), color);
 		if (surf == nullptr) 
 		{

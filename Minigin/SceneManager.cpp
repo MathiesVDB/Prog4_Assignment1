@@ -5,11 +5,11 @@ void dae::SceneManager::Update(float deltaTime)
 {
 	for(auto& scene : m_scenes)
 	{
-		scene->Update();
+		scene->Update(deltaTime);
 	}
 }
 
-void dae::SceneManager::FixedUpdate(const float fixedTimeStep)
+void dae::SceneManager::FixedUpdate([[maybe_unused]]const float fixedTimeStep)
 {
 	
 }

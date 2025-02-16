@@ -1,30 +1,39 @@
 #pragma once
+#include <vector>
 #include <memory>
-#include "Transform.h"
+#include <typeindex>
+#include <unordered_map>
+#include "Component.h"
 
 namespace dae
 {
-	class Texture2D;
-
 	class GameObject final
 	{
 	public:
-		virtual void Update();
-		virtual void Render() const;
+		GameObject()  = default;
+		~GameObject() = default;
+		GameObject(const GameObject& other)				= delete;
+		GameObject(GameObject&& other)					= delete;
+		GameObject& operator=(const GameObject& other)	= delete;
+		GameObject& operator=(GameObject&& other)		= delete;
 
-		void SetTexture(const std::string& filename);
-		void SetPosition(float x, float y);
+		void Update(float deltaTime);
+		void Render() const;
 
-		GameObject() = default;
-		virtual ~GameObject();
-		GameObject(const GameObject& other) = delete;
-		GameObject(GameObject&& other) = delete;
-		GameObject& operator=(const GameObject& other) = delete;
-		GameObject& operator=(GameObject&& other) = delete;
+		template <typename T, typename... Args>
+		T* AddComponent(Args&&... args);
+
+		template <typename T>
+		void RemoveComponent();
+
+		template <typename T>
+		T* GetComponent() const;
+
+		template <typename T>
+		bool HasComponent() const;
 
 	private:
-		Transform m_transform{};
-		// todo: mmm, every gameobject has a texture? Is that correct?
-		std::shared_ptr<Texture2D> m_texture{};
+		std::vector<std::unique_ptr<Component>> m_Components;
+		std::unordered_map<std::type_index, Component*> m_ComponentMap;
 	};
 }

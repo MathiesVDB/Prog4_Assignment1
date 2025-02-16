@@ -3,6 +3,8 @@
 #include <glm.hpp>
 #include <vec3.hpp>
 
+using namespace dae;
+
 class TransformComponent final : public Component
 {
 public:

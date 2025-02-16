@@ -34,8 +34,21 @@ void dae::TextObject::Render() const
 {
 	if (m_textTexture != nullptr)
 	{
-		const auto& pos = m_transform.GetPosition();
-		Renderer::GetInstance().RenderTexture(*m_textTexture, pos.x, pos.y);
+		std::shared_ptr<Transform> transform = nullptr;
+		if (GetOwner())
+		{
+			transform = GetOwner()->GetComponent<dae::Transform>();
+		}
+
+		if (transform)
+		{
+			const auto& pos = transform->GetPosition();
+			dae::Renderer::GetInstance().RenderTexture(*m_textTexture, pos.x, pos.y);
+		}
+		else
+		{
+			dae::Renderer::GetInstance().RenderTexture(*m_textTexture, 0.f, 0.f);
+		}
 	}
 }
 

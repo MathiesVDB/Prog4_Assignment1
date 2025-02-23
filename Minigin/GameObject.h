@@ -22,6 +22,21 @@ namespace dae
 		void Update(float deltaTime);
 		void Render() const;
 
+		//Handle parent/child relationship
+		void SetParent(GameObject* parent, bool keepWorldPosition);
+		void AddChild(GameObject* child);
+		void RemoveChild(GameObject* child);
+		bool IsChild(GameObject* child) const;
+
+        GameObject* GetParent() const { return m_Parent; }
+
+		//Position functions
+		const glm::vec3& GetLocalPosition() const;
+        void SetLocalPosition(const glm::vec3& pos);
+
+        const glm::vec3& GetWorldPosition();
+
+        //Template functions
 		template <typename T, typename... Args>
         std::shared_ptr<T> AddComponent(Args&&... args);
 
@@ -37,7 +52,22 @@ namespace dae
 
 
 	private:
-		std::unordered_map<std::type_index, std::shared_ptr<Component>> m_Components;
+		//---------------------------------------------------------------------------------
+        //Private Functions
+        //---------------------------------------------------------------------------------
+        void UpdateWorldPosition();
+		void SetPositionDirty();
+
+        //---------------------------------------------------------------------------------
+		//Private member variables
+        //---------------------------------------------------------------------------------
+        std::unordered_map<std::type_index, std::shared_ptr<Component>> m_Components;
+        glm::vec3 m_LocalPosition{ 0, 0, 0 };
+        glm::vec3 m_WorldPosition{ 0, 0, 0 };
+        bool m_IsPositionDirty{ true };
+
+        GameObject* m_Parent{ nullptr };
+        std::vector<GameObject*> m_Children;
 	};
 
     // add component

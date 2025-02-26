@@ -26,6 +26,6 @@ namespace dae
 		glm::vec3 m_Position{0, 0, 0};
 		MovementPattern m_MovementPattern{ MovementPattern::None };
 		float m_Time{ 0.0f };
-		float m_Speed{ 10.0f };
+		float m_Speed{ 70.0f };
 	};
 }

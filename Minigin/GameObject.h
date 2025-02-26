@@ -24,8 +24,6 @@ namespace dae
 
 		//Handle parent/child relationship
 		void SetParent(GameObject* parent, bool keepWorldPosition);
-		void AddChild(GameObject* child);
-		void RemoveChild(GameObject* child);
 		bool IsChild(GameObject* child) const;
 
         GameObject* GetParent() const { return m_Parent; }
@@ -57,6 +55,9 @@ namespace dae
         //---------------------------------------------------------------------------------
         void UpdateWorldPosition();
 		void SetPositionDirty();
+
+        void AddChild(GameObject* child);
+        void RemoveChild(GameObject* child);
 
         //---------------------------------------------------------------------------------
 		//Private member variables

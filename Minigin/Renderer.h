@@ -1,9 +1,34 @@
 #pragma once
 #include <SDL.h>
+#include <vector>
+
 #include "Singleton.h"
 
 namespace dae
 {
+	struct TransformStruct
+	{
+		float matrix[16] = {
+			1,0,0,0,
+			0,1,0,0,
+			0,0,1,0,
+			0,0,0,1 };
+	};
+
+	class GameObject3D
+	{
+	public:
+		TransformStruct transform;
+		int ID;
+	};
+
+	class GameObject3DAlt
+	{
+	public:
+		TransformStruct* transform;
+		int ID;
+	};
+
 	class Texture2D;
 	/**
 	 * Simple RAII wrapper for the SDL renderer
@@ -25,6 +50,8 @@ namespace dae
 
 		const SDL_Color& GetBackgroundColor() const { return m_clearColor; }
 		void SetBackgroundColor(const SDL_Color& color) { m_clearColor = color; }
+
+		void GetData(int ex, std::vector<float>& durations, std::vector<float>& stepsizes) const;
 	};
 }
 

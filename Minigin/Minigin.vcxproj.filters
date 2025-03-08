@@ -96,6 +96,12 @@
     <ClInclude Include="PlotComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -168,6 +174,9 @@
       <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="PlotComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

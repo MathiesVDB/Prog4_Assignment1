@@ -1,4 +1,7 @@
 #pragma once
+#include "Component.h"
+#include "Transform.h"
+#include "GameObject.h"
 
 class Command
 {
@@ -11,26 +14,70 @@ public:
 // Current Commands
 //------------------------------------------------
 
-class MoveLeftCommand : public Command
+class MoveLeftCommand final : public Command
 {
 public:
-	void Execute() override;
+	explicit MoveLeftCommand(dae::GameObject* owner) : m_Owner(owner) {}
+	void Execute() override
+	{
+		if (auto transform = m_Owner->GetComponent<dae::Transform>())
+		{
+			auto pos = transform->GetPosition();
+			transform->SetPosition(pos.x - 5.f, pos.y, pos.z);
+		}
+	}
+
+private:
+	dae::GameObject* m_Owner;
 };
 
-class MoveRightCommand : public Command
+class MoveRightCommand final : public Command
 {
 public:
-	void Execute() override;
+	explicit MoveRightCommand(dae::GameObject* owner) : m_Owner(owner) {}
+	void Execute() override
+	{
+		if (auto transform = m_Owner->GetComponent<dae::Transform>())
+		{
+			auto pos = transform->GetPosition();
+			transform->SetPosition(pos.x + 5.f, pos.y, pos.z);
+		}
+	}
+
+private:
+	dae::GameObject* m_Owner;
 };
 
-class MoveUpCommand : public Command
+class MoveUpCommand final : public Command
 {
 public:
-	void Execute() override;
+	explicit MoveUpCommand(dae::GameObject* owner) : m_Owner(owner) {}
+	void Execute() override
+	{
+		if (auto transform = m_Owner->GetComponent<dae::Transform>())
+		{
+			auto pos = transform->GetPosition();
+			transform->SetPosition(pos.x, pos.y - 5.f, pos.z);
+		}
+	}
+
+private:
+	dae::GameObject* m_Owner;
 };
 
-class MoveDownCommand : public Command
+class MoveDownCommand final : public Command
 {
 public:
-	void Execute() override;
+	explicit MoveDownCommand(dae::GameObject* owner) : m_Owner(owner) {}
+	void Execute() override
+	{
+		if (auto transform = m_Owner->GetComponent<dae::Transform>())
+		{
+			auto pos = transform->GetPosition();
+			transform->SetPosition(pos.x, pos.y + 5.f, pos.z);
+		}
+	}
+
+private:
+	dae::GameObject* m_Owner;
 };

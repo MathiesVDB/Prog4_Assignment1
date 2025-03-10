@@ -4,92 +4,124 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
+#include <string>
 
 class InputManager::InputManagerImpl
 {
 public:
-	InputManagerImpl()
-		: m_Gamepad(0) // Controller 0
-	{
-		memset(m_PreviousKeyboardState, 0, SDL_NUM_SCANCODES);
-	}
+    InputManagerImpl()
+        : m_Gamepad(0) // Controller 0
+    {
+        if (SDL_Init(SDL_INIT_GAMECONTROLLER) != 0)
+        {
+            std::cerr << "SDL_Init(SDL_INIT_GAMECONTROLLER) failed: " << SDL_GetError() << std::endl;
+        }
+        else
+        {
+            if (!SDL_IsGameController(0))
+            {
+                std::cout << "No game controller detected!" << std::endl;
+            }
+            else
+            {
+                std::cout << "Game controller detected!" << std::endl;
+            }
+        }
+    }
 
-	bool ProcessInput()
-	{
-		m_Gamepad.Update();
+    bool ProcessInput()
+    {
+        SDL_PumpEvents();
+        m_Gamepad.Update();
 
-		const Uint8* keyboardState = SDL_GetKeyboardState(nullptr);
+        const Uint8* keyboardState = SDL_GetKeyboardState(nullptr);
 
-		for (const auto& [key, commands] : m_KeyboardCommands)
-		{
-			for (const auto& [keyState, command] : commands)
-			{
-				bool execute = false;
-				switch (keyState)
-				{
-				case KeyState::Down:
-					execute = keyboardState[key] && !m_PreviousKeyboardState[key];
-					break;
-				case KeyState::Up:
-					execute = !keyboardState[key] && m_PreviousKeyboardState[key];
-					break;
-				case KeyState::Pressed:
-					execute = keyboardState[key];
-					break;
-				}
-				if (execute) command->Execute();
-			}
-		}
+        for (const auto& [key, commands] : m_KeyboardCommands)
+        {
+            bool isPressed = keyboardState[key];
 
-		for (const auto& [button, commands] : m_ControllerCommands)
-		{
-			for (const auto& [keyState, command] : commands)
-			{
-				bool execute = false;
-				switch (keyState)
-				{
-				case KeyState::Down:
-					execute = m_Gamepad.IsButtonDown(button);
-					break;
-				case KeyState::Up:
-					execute = m_Gamepad.IsButtonUp(button);
-					break;
-				case KeyState::Pressed:
-					execute = m_Gamepad.IsButtonPressed(button);
-					break;
-				}
-				if (execute) command->Execute();
-			}
-		}
+            for (const auto& [keyState, command] : commands)
+            {
+                if (keyState == KeyState::Pressed && isPressed)
+                {
+                    command->Execute();
+                }
+            }
 
-		memcpy(m_PreviousKeyboardState, keyboardState, SDL_NUM_SCANCODES);
-		return true;
-	}
+            m_PreviousKeyState[key] = isPressed;
+        }
 
-	void AddCommand(unsigned int key, KeyState state, Command* command)
-	{
-		m_KeyboardCommands[key].emplace_back(state, command);
-	}
+        for (const auto& [button, commands] : m_ControllerCommands)
+        {
+            bool buttonDown = m_Gamepad.IsButtonDown(button);
+            bool buttonPressed = m_Gamepad.IsButtonPressed(button);
+            bool buttonUp = m_Gamepad.IsButtonUp(button);
 
-	void AddControllerCommand(unsigned int button, KeyState state, Command* command)
-	{
-		m_ControllerCommands[button].emplace_back(state, command);
-	}
+            // Debugging output for button states
+            std::cout << "Button: " << button
+                << " Down: " << buttonDown
+                << " Pressed: " << buttonPressed
+                << " Up: " << buttonUp << std::endl;
+
+            // Execute commands based on button states
+            for (const auto& [keyState, command] : commands)
+            {
+                bool execute = false;
+                switch (keyState)
+                {
+                case KeyState::Down:
+                    execute = buttonDown;
+                    break;
+                case KeyState::Up:
+                    execute = buttonUp;
+                    break;
+                case KeyState::Pressed:
+                    execute = buttonPressed;
+                    break;
+                }
+
+                if (execute)
+                {
+                    // Debugging message for command execution
+                    std::cout << "Executing command for button: " << button << std::endl;
+                    command->Execute();
+                }
+            }
+        }
+
+        return true;
+    }
+
+    void AddCommand(unsigned int key, KeyState state, std::shared_ptr<Command> command)
+    {
+        m_KeyboardCommands[key].emplace_back(state, command);
+    }
+
+    void AddControllerCommand(unsigned int button, KeyState state, std::shared_ptr<Command> command)
+    {
+        m_ControllerCommands[button].emplace_back(state, command);
+    }
 
 private:
-	std::unordered_map<unsigned int, std::vector<std::pair<KeyState, Command*>>> m_KeyboardCommands;
-	std::unordered_map<unsigned int, std::vector<std::pair<KeyState, Command*>>> m_ControllerCommands;
-	Uint8 m_PreviousKeyboardState[SDL_NUM_SCANCODES]{};
-	GamePad m_Gamepad;
+    std::unordered_map<unsigned int, std::vector<std::pair<KeyState, std::shared_ptr<Command>>>> m_KeyboardCommands;
+    std::unordered_map<unsigned int, std::vector<std::pair<KeyState, std::shared_ptr<Command>>>> m_ControllerCommands;
+    std::unordered_map<unsigned int, bool> m_PreviousKeyState; // Store key states dynamically
+    GamePad m_Gamepad;
 };
 
 InputManager::InputManager()
-	: m_pImpl(std::make_unique<InputManagerImpl>())
+    : m_pImpl(std::make_unique<InputManagerImpl>())
 {
 }
 
 InputManager::~InputManager() = default;
 
 bool InputManager::ProcessInput() { return m_pImpl->ProcessInput(); }
-void InputManager::AddCommand(unsigned int key, KeyState state, Command* command) { m_pImpl->AddCommand(key, state, command); }
-void InputManager::AddControllerCommand(unsigned int button, KeyState state, Command* command) { m_pImpl->AddControllerCommand(button, state, command); }
+void InputManager::AddCommand(unsigned int key, KeyState state, std::shared_ptr<Command> command)
+{
+    m_pImpl->AddCommand(key, state, command);
+}
+void InputManager::AddControllerCommand(unsigned int button, KeyState state, std::shared_ptr<Command> command)
+{
+    m_pImpl->AddControllerCommand(button, state, command);
+}

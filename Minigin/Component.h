@@ -10,8 +10,8 @@ class Component
 public:
     virtual ~Component() = default;
 
-    Component& operator=(const Component& other) = delete;
-    Component& operator=(Component&& other) = delete;
+    Component& operator=(const Component& other)    = delete;
+    Component& operator=(Component&& other)         = delete;
 
     virtual void Update(float deltaTime);
     virtual void Render() const;

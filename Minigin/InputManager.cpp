@@ -34,6 +34,17 @@ public:
         SDL_PumpEvents();
         m_Gamepad.Update();
 
+        SDL_Event e;
+
+        while (SDL_PollEvent(&e))
+        {
+	        if (e.type == SDL_QUIT)
+	        {
+                std::cout << "Window closed, exiting\n";
+                return false;
+	        }
+        }
+
         const Uint8* keyboardState = SDL_GetKeyboardState(nullptr);
 
         for (const auto& [key, commands] : m_KeyboardCommands)

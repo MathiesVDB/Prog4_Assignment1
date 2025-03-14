@@ -11,8 +11,7 @@
 class HealthComponent final : public Component
 {
 public:
-	HealthComponent(); // Constructor
-	~HealthComponent(); // Destructor
+	HealthComponent(int maxLives); // Constructor
 
 	// -------------------------
 	// Copy/move constructors and assignment operators
@@ -25,15 +24,17 @@ public:
 	//-------------------------------------------------
 	// Member functions						
 	//-------------------------------------------------
+	int GetLives() const;
 
+	void SetMaxLives(int newMaxLives);
+	void TakeDamage(int takenDamage);
+
+	void SetLivesToMax();
 
 private:
 	//-------------------------------------------------
-	// Private member functions								
-	//-------------------------------------------------
-
-
-	//-------------------------------------------------
 	// Datamembers								
 	//-------------------------------------------------
+	int m_Lives{};
+	int m_MaxLives;
 };

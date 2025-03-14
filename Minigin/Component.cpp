@@ -13,7 +13,7 @@ namespace dae
 //---------------------------
 // Member functions
 //---------------------------
-void Component::Update([[maybe_unused]]float deltaTime)
+void Component::Update(float)
 {
 }
 

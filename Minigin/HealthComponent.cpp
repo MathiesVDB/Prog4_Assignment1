@@ -6,18 +6,32 @@
 //---------------------------
 // Constructor & Destructor
 //---------------------------
-HealthComponent::HealthComponent()
+HealthComponent::HealthComponent(int maxLives)
+	: m_MaxLives{maxLives}
 {
-	// nothing to create
-}
-
-HealthComponent::~HealthComponent()
-{
-	// nothing to destroy
+	m_Lives = m_MaxLives;
 }
 
 //---------------------------
 // Member functions
 //---------------------------
 
-// Write member functions here
+int HealthComponent::GetLives() const
+{
+	return m_Lives;
+}
+
+void HealthComponent::SetMaxLives(int newMaxLives)
+{
+	m_MaxLives = newMaxLives;
+}
+
+void HealthComponent::TakeDamage(int takenDamage)
+{
+	m_Lives -= takenDamage;
+}
+
+void HealthComponent::SetLivesToMax()
+{
+	m_Lives = m_MaxLives;
+}

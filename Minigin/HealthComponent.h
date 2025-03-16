@@ -9,10 +9,10 @@
 //-----------------------------------------------------
 // HealthComponent Class									 
 //-----------------------------------------------------
-class HealthComponent final : public Subject, public Component
+class HealthComponent final : public Component
 {
 public:
-	HealthComponent(int maxLives); // Constructor
+	HealthComponent(int maxLives);
 
 	// -------------------------
 	// Copy/move constructors and assignment operators

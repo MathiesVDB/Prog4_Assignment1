@@ -9,7 +9,7 @@
 HealthComponent::HealthComponent(int maxLives)
 	: m_MaxLives{maxLives}
 {
-	m_Lives = m_MaxLives;
+	SetLivesToMax();
 }
 
 //---------------------------
@@ -29,11 +29,11 @@ void HealthComponent::SetMaxLives(int newMaxLives)
 void HealthComponent::TakeDamage(int takenDamage)
 {
 	m_Lives -= takenDamage;
-	Notify(m_Lives);
+	Observer::GetInstance().Notify(Event::HealthChanged);
 }
 
 void HealthComponent::SetLivesToMax()
 {
 	m_Lives = m_MaxLives;
-	Notify(m_Lives);
+	Observer::GetInstance().Notify(Event::HealthChanged);
 }

@@ -4,11 +4,12 @@
 // Include Files
 //-----------------------------------------------------
 #include "Component.h"
+#include "Observer.h"
 
 //-----------------------------------------------------
 // HealthComponent Class									 
 //-----------------------------------------------------
-class HealthComponent final : public Component
+class HealthComponent final : public Subject, public Component
 {
 public:
 	HealthComponent(int maxLives); // Constructor

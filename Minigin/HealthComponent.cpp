@@ -29,9 +29,11 @@ void HealthComponent::SetMaxLives(int newMaxLives)
 void HealthComponent::TakeDamage(int takenDamage)
 {
 	m_Lives -= takenDamage;
+	Notify(m_Lives);
 }
 
 void HealthComponent::SetLivesToMax()
 {
 	m_Lives = m_MaxLives;
+	Notify(m_Lives);
 }

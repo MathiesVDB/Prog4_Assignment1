@@ -2,6 +2,8 @@
 #include "Component.h"
 #include "Transform.h"
 #include "GameObject.h"
+#include "HealthComponent.h"
+#include "Observer.h"
 
 class Command
 {
@@ -56,3 +58,40 @@ private:
 	dae::GameObject* m_Owner;
 	Direction m_Direction;
 };
+
+class DamageCommand final : public Command
+{
+public:
+	explicit DamageCommand(dae::GameObject* owner)
+		: m_Owner(owner) {
+	}
+
+	void Execute() override
+	{
+		if (auto health = m_Owner->GetComponent<HealthComponent>())
+		{
+			health->TakeDamage(1);
+		}
+	}
+
+private:
+	dae::GameObject* m_Owner;
+};
+
+//class PickupPelletCommand final : public Command
+//{
+//public:
+//	explicit PickupPelletCommand(dae::GameObject* owner, ScoreDisplay* score)
+//		: m_Owner(owner), m_Score(score)
+//	{
+//	}
+//
+//	void Execute() override
+//	{
+//		m_Score->SetScore(m_Score->GetScore() + 100);
+//	}
+//
+//private:
+//	dae::GameObject* m_Owner;
+//	ScoreDisplay* m_Score;
+//};

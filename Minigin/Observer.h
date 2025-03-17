@@ -1,66 +1,79 @@
 #pragma once
 #include <vector>
 #include <memory>
-#include <algorithm>
-#include "GameObject.h"
-#include "TextObject.h"
-#include "HealthComponent.h"
-#include "Singleton.h"
+
+#include "Component.h"
+
 
 enum class Event
 {
-    HealthChanged
+    HealthChanged,
+    ScoreChanged
 };
 
-class Observer : public dae::Singleton<Observer>
+class Observer
 {
 public:
-    using CallbackFunction = void(*)();
+    virtual ~Observer() = default;
+    virtual void Notify(const dae::GameObject* gameObject, Event event) = 0;
+};
 
-    void AddEventListener(Event event, CallbackFunction callback)
-	{
-        m_EventListeners[event].push_back(callback);
+class Subject
+{
+public:
+    void AddObserver(std::shared_ptr<Observer> observer)
+    {
+        m_Observers.push_back(observer);
     }
 
-    void Notify(Event event)
-	{
-        auto iterator = m_EventListeners.find(event);
-		if (iterator == m_EventListeners.end()) return;
+    void RemoveObserver(const std::shared_ptr<Observer> observer)
+    {
+        m_Observers.erase(std::remove(m_Observers.begin(), m_Observers.end(), observer), m_Observers.end());
+    }
 
-        for (const auto& callbackFunction : iterator->second)
+protected:
+    void Notify(const dae::GameObject* gameObject, Event event)
+    {
+        for (const std::shared_ptr<Observer>& observer : m_Observers)
         {
-            callbackFunction();
+            observer->Notify(gameObject, event);
         }
     }
 
 private:
-    std::unordered_map<Event, std::vector<CallbackFunction>> m_EventListeners;
+    std::vector<std::shared_ptr<Observer>> m_Observers;
 };
 
-class HealthDisplay
-{
-public:
-    explicit HealthDisplay(std::shared_ptr<dae::GameObject> displayObject)
-        : m_DisplayObject(displayObject)
-	{
 
-        Observer::GetInstance().AddEventListener(Event::HealthChanged, &HealthDisplay::UpdateText);
-    }
-
-    static void UpdateText()
-	{
-        if (!instance) return;
-
-        auto textComponent = instance->m_DisplayObject->GetComponent<dae::TextObject>();
-        if (!textComponent) return;
-
-        textComponent->SetText("Lives: " + std::to_string(instance->m_Lives));
-    }
-
-    void SetLives(int lives) { m_Lives = lives; instance = this; }
-
-private:
-    std::shared_ptr<dae::GameObject> m_DisplayObject;
-    int m_Lives = 0;
-    static HealthDisplay* instance;
-};
+//class ScoreDisplay
+//{
+//public:
+//    explicit ScoreDisplay(std::shared_ptr<dae::GameObject>& displayObject)
+//    {
+//        m_DisplayObject = std::move(displayObject);
+//
+//        Observer::GetInstance().AddEventListener(Event::ScoreChanged, &ScoreDisplay::UpdateText);
+//    }
+//
+//    static void UpdateText()
+//    {
+//        auto textComponent = instance->m_DisplayObject->GetComponent<dae::TextObject>();
+//        if (!textComponent) return;
+//
+//        textComponent->SetText("Score: " + std::to_string(instance->m_Score));
+//    }
+//
+//    void SetScore(int score)
+//    {
+//	    m_Score = score;
+//    	instance = this;
+//
+//		Observer::GetInstance().Notify(Event::ScoreChanged);
+//    }
+//	int GetScore() const { return m_Score; }
+//
+//private:
+//    std::shared_ptr<dae::GameObject> m_DisplayObject;
+//    int m_Score = 0;
+//    static ScoreDisplay* instance;
+//};

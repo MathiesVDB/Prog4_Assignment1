@@ -108,6 +108,12 @@
     <ClInclude Include="Observer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HealthDisplayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achievement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -189,6 +195,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HealthDisplay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthDisplayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Achievement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

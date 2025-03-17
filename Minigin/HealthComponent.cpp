@@ -29,11 +29,11 @@ void HealthComponent::SetMaxLives(int newMaxLives)
 void HealthComponent::TakeDamage(int takenDamage)
 {
 	m_Lives -= takenDamage;
-	Observer::GetInstance().Notify(Event::HealthChanged);
+	Notify(GetOwner(), Event::HealthChanged);
 }
 
 void HealthComponent::SetLivesToMax()
 {
 	m_Lives = m_MaxLives;
-	Observer::GetInstance().Notify(Event::HealthChanged);
+	Notify(GetOwner(), Event::HealthChanged);
 }

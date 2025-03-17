@@ -9,7 +9,7 @@
 //-----------------------------------------------------
 // HealthComponent Class									 
 //-----------------------------------------------------
-class HealthComponent final : public Component
+class HealthComponent final : public Component, public Subject
 {
 public:
 	HealthComponent(int maxLives);
@@ -19,8 +19,6 @@ public:
 	// -------------------------    
 	HealthComponent(const HealthComponent& other)					= default;
 	HealthComponent(HealthComponent&& other) noexcept				= default;
-	HealthComponent& operator=(const HealthComponent& other)		= default;
-	HealthComponent& operator=(HealthComponent&& other) noexcept	= default;
 
 	//-------------------------------------------------
 	// Member functions						
